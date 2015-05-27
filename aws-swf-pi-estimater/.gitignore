@@ -6,3 +6,4 @@ bin/
 
 #AWS-SWF
 .apt_generated/
+access.properties
