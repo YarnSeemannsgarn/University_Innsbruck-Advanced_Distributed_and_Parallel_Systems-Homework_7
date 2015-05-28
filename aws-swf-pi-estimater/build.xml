@@ -1,0 +1,90 @@
+<project name="AWS Flow Framework Samples" default="compile" basedir=".">
+	
+	<property name="sources.dir" value="src" />
+	<property name="output.dir" value="bin" />
+	<property name="lib.dir" value="lib" />
+	
+	<property name="classes.dir" value="${output.dir}/classes" />
+	<property name="apt.generated.src" value="${output.dir}/private/apt_generated" />
+
+	<property name="aspectj.weaver" value="${lib.dir}/aws_third_party/aspectj-1.6/aspectjweaver.jar" />
+	<property name="activity.worker" value="PiEstimaterActivityWorker" />
+	<property name="activity.worker.main-class"  value="piEstimater.PiEstimater.PiEstimaterActivityWorker"/>
+	<property name="workflow.worker.main-class"  value="piEstimater.PiEstimater.PiEstimaterWorkflowWorker"/>
+	<property name="main-class"  value="piEstimater.PiEstimater.PiEstimaterMain"/>
+	
+    <path id="classpath">
+        <fileset dir="${lib.dir}" includes="**/*.jar"/>
+        <pathelement location="."/>
+    </path>
+	
+    <target name="compile">
+        <mkdir dir="${output.dir}" />
+    	<mkdir dir="${classes.dir}" />
+    	<mkdir dir="${apt.generated.src}"/>
+    	
+        <javac destdir="${classes.dir}"
+          source="1.6"
+          target="1.6"
+          classpathref="classpath">
+          
+        	<compilerarg value="-proc:only" />
+        	<compilerarg value="-s" />
+        	<compilerarg value="${apt.generated.src}" />
+        	
+        	<src path="${sources.dir}" />
+        </javac>
+    	
+    	<javac destdir="${classes.dir}"
+          source="1.6"
+          target="1.6"
+          classpathref="classpath">
+          
+        	<compilerarg value="-proc:none" />
+        	
+        	<src path="${sources.dir}" />
+        	<src path="${apt.generated.src}" />
+        </javac>
+    	
+        <copy todir="${classes.dir}">
+    	    <fileset dir="${sources.dir}" excludes="**/*.java"/>
+        </copy>
+    	
+    </target>
+	
+    <target name="jar-activity-worker" depends="compile">
+        <jar destfile="${basedir}/${activity.worker}.jar" basedir="${classes.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="${activity.worker.main-class}"/>
+            </manifest>
+            <zipgroupfileset dir="${lib.dir}/aws" includes="**/*.jar"/>
+        </jar>
+    </target>
+	
+    <target name="run-workflow-worker" depends="compile">
+        <java classname="${workflow.worker.main-class}" fork="true">
+            <classpath>
+                <path refid="classpath" />
+            	<path location="${classes.dir}" />
+            </classpath>
+        	<jvmarg value="-javaagent:${aspectj.weaver}" />
+        </java>
+    </target>
+	
+    <target name="run" depends="compile, jar-activity-worker">
+        <java classname="${main-class}" fork="true">
+            <classpath>
+                <path refid="classpath" />
+            	<path location="${classes.dir}" />
+            </classpath>
+        	<jvmarg value="-javaagent:${aspectj.weaver}" />
+        	<arg value="${arg0}"/>
+        </java>
+    </target>
+	
+    <target name="clean">
+    	<delete dir="${output.dir}" />
+    	<delete file="${basedir}/${activity.worker}.jar"/>
+    </target>
+	
+</project>

@@ -23,6 +23,9 @@ public class PiEstimaterWorkflowImpl implements PiEstimaterWorkflow {
 		
 		// Validate
 		client.validateResult(sum);
+		
+		// Print result (too see it in Workflow Worker)
+		printResultOnWorkflowWorker(sum);
 	}
 	
 	@Asynchronous
@@ -40,5 +43,10 @@ public class PiEstimaterWorkflowImpl implements PiEstimaterWorkflow {
 			}
 		}
 		return Promises.listOfPromisesToPromise(calculatedParts);
+	}
+	
+	@Asynchronous
+	private void printResultOnWorkflowWorker(Promise<Double> result) {
+		System.out.println("Result: " + result.get());
 	}
 }

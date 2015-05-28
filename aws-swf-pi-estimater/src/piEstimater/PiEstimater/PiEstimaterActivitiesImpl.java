@@ -86,5 +86,5 @@ public class PiEstimaterActivitiesImpl implements PiEstimaterActivities {
 		else {
 			System.out.println("Validation with maximum variance of 0,01: Wrong result!");
 		}
-	}	
+	}
 }
