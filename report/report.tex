@@ -1,0 +1,278 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% University/School Laboratory Report
+% LaTeX Template
+% Version 3.1 (25/3/14)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Linux and Unix Users Group at Virginia Tech Wiki 
+% (https://vtluug.org/wiki/Example_LaTeX_chem_lab_report)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass{article}
+
+%\usepackage[version=3]{mhchem} % Package for chemical equation typesetting
+%\usepackage{siunitx} % Provides the \SI{}{} and \si{} command for typesetting SI units
+\usepackage{graphicx} % Required for the inclusion of images
+%\usepackage{natbib} % Required to change bibliography style to APA
+%\usepackage{amsmath} % Required for some math elements 
+\usepackage{listings}
+\lstset{
+  breaklines=true,
+  basicstyle=\scriptsize,
+  columns=fullflexible
+}
+
+\usepackage{tikz}
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs
+
+\renewcommand{\labelenumi}{\alph{enumi}.} % Make numbering in the enumerate environment by letter rather than number (e.g. section 6)
+
+%\usepackage{times} % Uncomment to use the Times New Roman font
+
+%----------------------------------------------------------------------------------------
+%	DOCUMENT INFORMATION
+%----------------------------------------------------------------------------------------
+
+\title{Report: Homework 7 - Amazon Flow Framework}% Title
+
+\author{Jan \textsc{Schlenker}} % Author name
+
+\date{\today} % Date for the report
+
+\begin{document}
+
+\maketitle % Insert the title, author and date
+
+\begin{center}
+\begin{tabular}{l l}
+Instructor: & Dipl.-Ing. Dr. Simon Ostermann \\
+Programming language: & Java \\
+Library used: & Java AWS SDK \& Jsch (SSH-library) \\
+Total points: & 10 \\
+\end{tabular}
+\end{center}
+
+% If you wish to include an abstract, uncomment the lines below
+% \begin{abstract}
+% Abstract text
+% \end{abstract}
+
+%----------------------------------------------------------------------------------------
+%	SECTION 1
+%----------------------------------------------------------------------------------------
+
+\section{Task 1}
+
+To execute the AwsFlowFramework samples from the Java AWS SDK, the README.md of the samples is pretty useful, which worked for me (Extract follows):
+\\
+\\
+\begin{textit}
+\#\# Prerequisites 
+\\ 
+\\ 
+*   You must have a valid Amazon Web Services developer account. \\
+*   Requires the AWS SDK for Java. For more information on the AWS SDK for Java, see (http\-://\-aws.\-amazon.\-com/\-sdkforjava). \\
+*   You must be signed up for the following services: \\
+    *   Amazon Simple Workflow Service (SWF). For more information, see \\ 
+(http://aws.amazon.com/swf). \\
+    *   Amazon Simple Storage Service (S3). For more information, see \\ 
+(http://aws.amazon.com/s3). \\
+*   JUnit (version 4.7) is required to run the samples. The jar file must be in the classpath. For more information, see \\ 
+(http://www.junit.org/) \\
+*   org.springframework.test (version 3.0) is required to run the samples. The jar file must be in the classpath. For more information, see \\ 
+(http://www.springsource.org/) \\
+*   Log4j (version 1.2.15) is required to run the samples. The jar file must be in the classpath. For more information, see \\ 
+(http://logging.apache.org/log4j/1.2/) \\ \\
+
+\#\# Running the Samples \\ \\
+
+The steps for running the AWS Flow Framework samples are: \\ \\
+
+1.  Create the Samples domain \\
+    1.  Go to the SWF Management Console \\
+(https://console.aws.amazon.com/swf/home). \\
+    2.  Follow the on-screen instructions to log in. \\
+    3.  Click Manage Domains and register a new domain with the name Samples. \\ \\
+
+2.  Open the access.properties in the samples folder. \\ \\
+
+3.  Locate the following sections and fill in your Access Key ID and Secret Access Key. You can use the same values for SWF and S3: \\ \\
+
+    ``` \\
+    \# Fill in your AWS Access Key ID and Secret Access Key for SWF \\
+    \# http://aws.amazon.com/security-credentials \\
+    AWS.Access.ID=<Your AWS Access Key> \\
+    AWS.Secret.Key=<Your AWS Secret Key> \\
+    AWS.Account.ID=<Your AWS Account ID> \\ \\
+
+    \# Fill in your AWS Access Key ID and Secret Access Key for S3 \\
+    \# http://aws.amazon.com/security-credentials \\
+    S3.Access.ID=<Your AWS Access Key> \\
+    S3.Secret.Key=<Your AWS Secret Key> \\
+    S3.Account.ID=<Your AWS Account ID> \\ \\
+    ```
+
+4.  Some samples upload files to S3. Locate the following section and fill in the name of S3 bucket that you want the samples to use: \\ \\
+
+     ``` \\
+     \#\#\#\#\#\#\# FileProcessing Sample Config Values \#\#\#\#\#\#\#\#\#\# \\
+     Workflow.Input.TargetBucketName=<Your S3 bucket name> \\
+     ``` \\ \\
+
+5.  Save the file. \\ \\
+
+6.  Set the environment variable AWS\_SWF\_SAMPLES\_CONFIG to the full path of the directory containing the access.properties file. For example on windows run this command: \\ \\
+
+     ``` \\
+     set AWS\_\-SWF\_\-SAMPLES\_\-CONFIG=<Your SDK Directrory>/\-src/\-samples/\-AwsFlowFramework \\
+     ``` \\ \\
+
+     and on linux use this command to set the environment variable: \\ \\
+
+     ``` \\
+     export AWS\_\-SWF\_\-SAMPLES\_\-CONFIG=<Your SDK Directrory>/\-src/\-samples/\-AwsFlowFramework \\ \\
+     ``` \\ \\
+
+7.  Compile the samples by using the Ant build.xml file. This will create binaries in bin directory under the samples directory. \\
+
+8.  To run the samples follow these instructions: \\ \\
+
+   *Hello World Sample:* \\ \\
+
+     The sample has three executables. You should run each in a separate terminal/console. \\
+     - Run: `ant -f build.xml -Dmain-class="com.\-amazonaws.\-services.\-simpleworkflow.\-flow.\-examples.\-helloworld.\-ActivityHost" run` \\
+     - Run: `ant -f build.xml -Dmain-class="com.\-amazonaws.\-services.\-simpleworkflow.\-flow.\-examples.\-helloworld.\-WorkflowHost" run` \\
+     - Run: `ant -f build.xml -Dmain-class="com.\-amazonaws.\-services.\-simpleworkflow.\-flow.\-examples.\-helloworld.\-WorkflowExecutionStarter" run` \\ \\
+
+
+   *Booking Sample:* \\ \\
+
+     The sample has three executables. You should run each in a separate terminal/console. From the samples folder, \\
+     - Run: `ant -f build.xml -Dmain-class="com.\-amazonaws.\-services.\-simpleworkflow.\-flow.\-examples.\-booking.\-ActivityHost" run` \\
+     - Run: `ant -f build.xml -Dmain-class="com.\-amazonaws.\-services.\-simpleworkflow.\-flow.\-examples.\-booking.\-WorkflowHost" run` \\
+     - Run: `ant -f build.xml -Dmain-class="com.\-amazonaws.\-services.\-simpleworkflow.\-flow.\-examples.\-booking.\-WorkflowExecutionStarter" run` \\ \\
+\end{textit}
+
+The HelloWorld and the Booking example worked for me. I used a similiar Ant build file for my own programme. I also tried Maven, but it was not easy to correctly configure the aspectj part, even if there is quite a good documentation under http\-://\-stackoverflow.\-com/\-questions/\-9392655/\-how-\-to-\-consume-\-amazon-\-swf. My problem with (pure) Ant ist, that the uploaded files are pretty big because all libraries are included (time was too short to add dependcy management with e.g. Ivy).
+
+\section{Task 2}
+\subsection{Requirements}
+
+\begin{itemize}
+\item Java 1.7
+\item Ant 1.9.2
+\end{itemize}
+
+
+\subsection{How to run the programme}
+
+First of all extract the archive file \texttt{homework\_7.tar.gz} (sry for the big size!):
+
+\begin{lstlisting}[language=bash, deletekeywords={cd}]
+  $ tar -xzf homework_7.tar.gz
+  $ cd homework_5_2
+\end{lstlisting}
+
+Adapt the settings in access.properties:
+
+\begin{lstlisting}[language=bash, deletekeywords={cd}]
+  $ vi access.properties & 
+\end{lstlisting}
+
+Now you need two terminals. In the first terminal do:
+
+\begin{lstlisting}[language=bash]
+  $ ant run-workflow-worker
+\end{lstlisting}
+
+In the second do:
+
+\begin{lstlisting}[language=bash]
+  $ ant run -Darg0=<instances>
+\end{lstlisting}
+
+where <instances> is the number of instances you would like to launch.
+
+\subsection{Programme explanation}
+The files of the the programme are structured as follows:
+
+\begin{itemize}
+\item The \texttt{\textbf{src}} directory contains the source files
+\item The \texttt{\textbf{lib}} directory contains the library files of \texttt{AWS SDK} and \texttt{JSch}
+\item The \texttt{\textbf{build.xml}} file contains build information for \texttt{Ant}
+\item The \texttt{\textbf{access.properties}} contains AWS credential data
+\end{itemize}
+
+The file \texttt{src/\-piEstimater/\-PiEstimater/\-PiEstimaterMain} contains the main method for the ant run job. The programme basically creates as many ec2 instances as given, copies an ActivityWorker jar (generated by Ant before run task) and the access.properties to the instance and runs this worker. Afterwards it creates an SWFClient proxy and indirectly creates 10 * given-instance-number activities.
+
+
+%\begin{center}\ce{2 Mg + O2 -> 2 MgO}\end{center}
+
+% If you have more than one objective, uncomment the below:
+%\begin{description}
+%\item[First Objective] \hfill \\
+%Objective 1 text
+%\item[Second Objective] \hfill \\
+%Objective 2 text
+%\end{description}
+
+%----------------------------------------------------------------------------------------
+%	SECTION 2$
+%----------------------------------------------------------------------------------------
+
+%----------------------------------------------------------------------------------------
+%	SECTION 3
+%----------------------------------------------------------------------------------------
+
+%Because of this reaction, the required ratio is the atomic weight of magnesium: \SI{16.00}{\gram} of oxygen as experimental mass of Mg: experimental mass of oxygen or $\frac{x}{1.31}=\frac{16}{0.87}$ from which, $M_{\ce{Mg}} = 16.00 \times \frac{1.31}{0.87} = 24.1 = \SI{24}{\gram\per\mole}$ (to two significant figures).
+
+%----------------------------------------------------------------------------------------
+%	SECTION 4
+%----------------------------------------------------------------------------------------
+
+%\section{Results and Conclusions}
+
+%The atomic weight of magnesium is concluded to be \SI{24}{\gram\per\mol}, as determined by the stoichiometry of its chemical combination with oxygen. This result is in agreement with the accepted value.
+
+%\begin{figure}[h]
+%\begin{center}
+%\includegraphics[width=0.65\textwidth]{placeholder} % Include the image placeholder.png
+%\caption{Figure caption.}
+%\end{center}
+%\end{figure}
+%
+%----------------------------------------------------------------------------------------
+%	SECTION 5
+%----------------------------------------------------------------------------------------
+
+%\section{Discussion of Experimental Uncertainty}
+
+%The accepted value (periodic table) is \SI{24.3}{\gram\per\mole} \cite{Smith:2012qr}. The percentage discrepancy between the accepted value and the result obtained here is 1.3\%. Because only a single measurement was made, it is not possible to calculate an estimated standard deviation.
+
+%The most obvious source of experimental uncertainty is the limited precision of the balance. Other potential sources of experimental uncertainty are: the reaction might not be complete; if not enough time was allowed for total oxidation, less than complete oxidation of the magnesium might have, in part, reacted with nitrogen in the air (incorrect reaction); the magnesium oxide might have absorbed water from the air, and thus weigh ``too much." Because the result obtained is close to the accepted value it is possible that some of these experimental uncertainties have fortuitously cancelled one another.
+
+
+%----------------------------------------------------------------------------------------
+%	BIBLIOGRAPHY
+%----------------------------------------------------------------------------------------
+
+%\bibliographystyle{apalike}
+
+%\bibliography{sample}
+
+%----------------------------------------------------------------------------------------
+
+
+\end{document}
